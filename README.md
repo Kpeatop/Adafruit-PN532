@@ -1,3 +1,41 @@
+## Note for 7 byte UID Mifare Classic  cards (Mifare Plus in legacy mode)
+For 7 byte UID Mifare's only last 4 byte should be used for authenticate sectors.  
+This library have bug in examples that passes all 7 bytes to authenticate command. 
+
+### PN532 Command example
+
+If you have UID `0x04 0x33 0x18 0xEA 0x70 0x32 0x80`  
+
+and want to authenticate block 4 (sector 1), then full PN532 command will be:  
+
+`0xD4 0x40 0x01 0x60 0x04 0xA7 0x3F 0x5D 0xC1 0xD3 0x33 0xEA 0x70 0x32 0x80`  
+(without PREAMBLE/POSTAMBLE and checksums)  
+
+Command structure:  
+
+* `0xD4` — **TFI** from host controller to PN532
+* `0x40` — **InDataExchange** command 
+* `0x01` — **Tg** byte number of target (card)
+* `0x60` — **Mifare command** authenticate with key A
+* `0xA7 0x3F 0x5D 0xC1 0xD3 0x33` — **Mifare Key A** for authenticated sector
+* `0xEA 0x70 0x32 0x80` — **Last 4 bytes of UID** 
+
+
+### PN532 Response example
+Successfully authenticated response: `0x00 0x00 0xFF 0x03 0xFD 0xD5 0x41 0x00`  
+
+If you pass all 7 bytes UID to auth command, you will get `syntax error` response from PN532.  
+This library is incorrectry handle `syntax error` response from pn532.
+
+Syntax error respone: `0x00 0x00 0xFF 0x01 0xFF 0x7F 0x81 0x00`
+
+
+
+
+
+
+---
+
 Source document: https://www.nxp.com/docs/en/user-guide/141520.pdf 
 
 # 6.2 PN532 Host controller communication protocol
