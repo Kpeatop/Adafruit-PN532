@@ -2,7 +2,7 @@
 What changed in genuine Adafrauit PN532 library
 
 * **_inListedTag** -- tag number for `inDataExchange` method. Defined as `0x1` because `0x0` returns error.
-
+* **PN532_PACKBUFFSIZ** -- increased from 64 to 255 to read long responses from EMV cards. 
 
 ## Note for 7 byte UID Mifare Classic  cards (Mifare Plus in legacy mode)
 For 7 byte UID Mifare's only last 4 byte should be used for authenticate sectors.  
